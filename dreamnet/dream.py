@@ -17,43 +17,53 @@ import random
 
 class DreamAgent:
     def __init__(self):
+        # Get the directory where this script is located
+        self.script_dir = os.path.dirname(os.path.abspath(__file__))
+        
         self.model_name = "qwen3:1.7b"
-        self.brain_file = "brain.json"
-        self.output_file = "output.json"
-        self.logs_dir = "logs"
-        self.echoes_dir = "echoes"
+        self.brain_file = os.path.join(self.script_dir, "brain.json")
+        self.output_file = os.path.join(self.script_dir, "output.json")
+        self.logs_dir = os.path.join(self.script_dir, "logs")
+        self.echoes_dir = os.path.join(self.script_dir, "echoes")
         
-        # Enhanced symbol pools for diverse generation
+        # Create directories if they don't exist
+        os.makedirs(self.logs_dir, exist_ok=True)
+        os.makedirs(self.echoes_dir, exist_ok=True)
+        
+        # Enhanced symbol pools with expanded mystical vocabulary
         self.symbol_pools = {
-            'cosmic': ['☉', '☽', '✦', '✧', '✯', '⟐', '⬟', '◎', '◉', '◌', '○', '●', '◯'],
-            'mystical': ['☯', '⚡', '🔮', '🌙', '⭐', '💫', '✨', '🌟', '🔯', '☪', '☸', '༄'],
-            'geometric': ['△', '▲', '▽', '▼', '◊', '◈', '◇', '□', '■', '▢', '▣', '◦', '⬢', '⬡'],
-            'flow': ['∞', '∿', '〰', '≈', '⤙', '⤜', '⤛', '⟁', '⟐', '≋', '〜', '∼'],
-            'nature': ['🌿', '🍃', '🌱', '🌾', '🌸', '🌺', '🌻', '🌷', '🌹', '🏔', '🌊', '⚘'],
-            'ethereal': ['※', '⁂', '⁎', '⁕', '⁜', '⁝', '⁞', '⁺', '⁻', '°', '˚', '∘', '∙']
+            'sacred': ['☯', '🕉', '✡', '☪', '⚛', '♱', '☥', '🔯', '☸', '✝', '☦', '☩'],
+            'cosmic': ['∞', '✦', '✧', '⭐', '🌟', '💫', '🌙', '☽', '☾', '◯', '⭕', '☉', '✯', '✰', '✱'],
+            'geometric': ['◊', '▲', '∆', '◈', '⟁', '⬟', '⬢', '⬡', '⧫', '◇', '⬠', '⬣', '⬦', '⬧'],
+            'elemental': ['🔥', '💧', '🌍', '💨', '⚡', '❄', '🌊', '🍃', '🌋', '🌪', '☄', '🌈'],
+            'mystical': ['🔮', '🌺', '🦋', '🕊', '🐉', '🌸', '🍄', '🌿', '🔯', '✨', '🦚', '🦢', '🌹'],
+            'ancient': ['𓂀', '𓅃', '𓇯', '𓈖', '⚜', '☬', '◉', '⚫', '⚪', '𓁿', '𓀠', '𓆃'],
+            'energy': ['⚡', '💥', '🌊', '🔥', '💫', '✨', '⭐', '🌟', '💖', '💎', '💠', '🔆'],
+            'celestial': ['☄', '🌌', '🌠', '💫', '🌃', '🌆', '🌇', '🌉', '☀', '🌞', '🌝', '🌛'],
+            'nature': ['🌲', '🌳', '🌴', '🌵', '🌷', '🌻', '🌼', '🏵', '🥀', '🌾', '🌱', '🍀'],
+            'transformation': ['🦋', '🐛', '🦅', '🕊', '🦉', '🦆', '🐍', '🦎', '🐲', '🦄', '🦃', '🦚'],
+            'quantum': ['⟨', '⟩', '∴', '∵', '∀', '∃', '⊗', '⊕', '⊙', '⊚', '⊛', '⊜'],
+            'flow': ['∞', '∿', '〰', '≈', '⤙', '⤜', '⤛', '⟁', '⟐', '≋', '〜', '∼', '≀', '≁'],
+            'ethereal': ['※', '⁂', '⁎', '⁕', '⁜', '⁝', '⁞', '⁺', '⁻', '°', '˚', '∘', '∙', '⊹', '✧']
         }
         
-        # Enhanced color palettes
+        # Enhanced color palettes with more nuanced selections
         self.color_palettes = {
-            'cosmic': ['#1a1a2e', '#16213e', '#0f3460', '#533483', '#7209b7', '#2d1b69'],
-            'mystical': ['#8e7cc3', '#9b59b6', '#663399', '#4a154b', '#6a0572', '#ab83a1'],
-            'nature': ['#27ae60', '#2ecc71', '#1abc9c', '#16a085', '#f39c12', '#e67e22'],
-            'warm': ['#e74c3c', '#c0392b', '#d35400', '#e67e22', '#f39c12', '#f1c40f'],
-            'cool': ['#3498db', '#2980b9', '#34495e', '#2c3e50', '#1abc9c', '#16a085'],
-            'ethereal': ['#ecf0f1', '#bdc3c7', '#95a5a6', '#7f8c8d', '#34495e', '#2c3e50']        }
-        
-        # Enhanced mystical symbol pools for thematic generation
-        self.symbol_pools = {
-            'sacred': ['☯', '🕉', '✡', '☪', '⚛', '♱', '☥', '🔯'],
-            'cosmic': ['∞', '✦', '✧', '⭐', '🌟', '💫', '🌙', '☽', '☾', '◯', '⭕'],
-            'geometric': ['◊', '▲', '∆', '◈', '⟁', '⬟', '⬢', '⬡', '⧫', '◇'],
-            'elemental': ['🔥', '💧', '🌍', '💨', '⚡', '❄', '🌊', '🍃'],
-            'mystical': ['🔮', '🌺', '🦋', '🕊', '🐉', '🌸', '🍄', '🌿', '🔯', '✨'],
-            'ancient': ['𓂀', '𓅃', '𓇯', '𓈖', '⚜', '☬', '◉', '⚫', '⚪'],
-            'energy': ['⚡', '💥', '🌊', '🔥', '💫', '✨', '⭐', '🌟', '💖', '💎']
+            'cosmic': ['#1a1a2e', '#16213e', '#0f3460', '#533483', '#7209b7', '#2d1b69', '#4a0e4e', '#81689d'],
+            'mystical': ['#8e7cc3', '#9b59b6', '#663399', '#4a154b', '#6a0572', '#ab83a1', '#ce93d8', '#ba68c8'],
+            'nature': ['#27ae60', '#2ecc71', '#1abc9c', '#16a085', '#f39c12', '#e67e22', '#52b788', '#74c69d'],
+            'warm': ['#e74c3c', '#c0392b', '#d35400', '#e67e22', '#f39c12', '#f1c40f', '#ff6b6b', '#ee6c4d'],
+            'cool': ['#3498db', '#2980b9', '#34495e', '#2c3e50', '#1abc9c', '#16a085', '#4ecdc4', '#45b7d1'],
+            'ethereal': ['#ecf0f1', '#bdc3c7', '#95a5a6', '#7f8c8d', '#34495e', '#2c3e50', '#dfe7fd', '#c7ceea'],
+            'twilight': ['#5f27cd', '#341f97', '#2e86ab', '#48466d', '#3d3d3d', '#718093', '#4834d4', '#686de0'],
+            'aurora': ['#f8b195', '#f67280', '#c06c84', '#6c5ce7', '#a29bfe', '#74b9ff', '#a29bfe', '#6c5ce7'],
+            'earth': ['#d4a574', '#a68a64', '#936639', '#7f5539', '#582f0e', '#6f4e37', '#8b5a3c', '#a0522d'],
+            'ocean': ['#006ba6', '#0496ff', '#3a86ff', '#7209b7', '#560bad', '#3f37c9', '#4361ee', '#4895ef'],
+            'fire': ['#ff006e', '#fb5607', '#ffbe0b', '#fb8500', '#ff4800', '#ff0000', '#dc2f02', '#e85d04'],
+            'spirit': ['#e0aaff', '#c77dff', '#9d4edd', '#7209b7', '#560bad', '#3c096c', '#240046', '#10002b']
         }
         
-        # Enhanced fallback responses with variety
+        # Enhanced fallback responses with more variety
         self.fallback_responses = [
             {
                 "symbol": "∞",
@@ -84,6 +94,24 @@ class DreamAgent:
                 "phrase": "Sacred geometry holds the universe's blueprint.",
                 "color": "#e67e22",
                 "reasoning": "Perfect forms echo the divine mathematical order."
+            },
+            {
+                "symbol": "🌙",
+                "phrase": "In lunar cycles, transformation finds its rhythm.",
+                "color": "#6c5ce7",
+                "reasoning": "The moon guides those who journey through darkness."
+            },
+            {
+                "symbol": "☯",
+                "phrase": "Balance dissolves all boundaries into unity.",
+                "color": "#2c3e50",
+                "reasoning": "Duality merges in the dance of opposites."
+            },
+            {
+                "symbol": "🔮",
+                "phrase": "The crystal sphere reflects infinite possibilities.",
+                "color": "#a29bfe",
+                "reasoning": "Vision clarifies when we gaze beyond the veil."
             }
         ]
     
@@ -101,7 +129,7 @@ class DreamAgent:
     
     def extract_concept(self, intent):
         """Extract main concept from intent for echo file naming"""
-        # Enhanced concept extraction with better filtering
+        # Enhanced concept extraction with weighted keywords
         words = re.findall(r'\b\w+\b', intent.lower())
         
         # Expanded stop words for better concept extraction
@@ -109,17 +137,34 @@ class DreamAgent:
             'this', 'that', 'with', 'from', 'they', 'have', 'will', 'been', 
             'the', 'and', 'or', 'but', 'for', 'nor', 'yet', 'so', 'a', 'an',
             'how', 'what', 'when', 'where', 'why', 'who', 'which', 'both',
-            'giver', 'receiver', 'explore', 'essence', 'transforms'
+            'giver', 'receiver', 'explore', 'essence', 'transforms', 'between',
+            'through', 'within', 'without', 'beyond', 'above', 'below'
         }
         
-        # Look for meaningful concepts (longer words, not in stop list)
-        meaningful_words = [w for w in words if len(w) > 4 and w not in stop_words]
-          # If no long words, try shorter meaningful ones
-        if not meaningful_words:
-            meaningful_words = [w for w in words if len(w) > 3 and w not in stop_words]
+        # Priority concepts (weighted selection)
+        priority_concepts = {
+            'love': 10, 'wisdom': 10, 'peace': 10, 'harmony': 10,
+            'forgiveness': 9, 'transformation': 9, 'balance': 9, 'energy': 9,
+            'healing': 8, 'growth': 8, 'journey': 8, 'power': 8,
+            'light': 7, 'shadow': 7, 'dream': 7, 'spirit': 7,
+            'consciousness': 6, 'awareness': 6, 'presence': 6, 'flow': 6
+        }
         
-        if meaningful_words:
-            return meaningful_words[0]
+        # Score words based on priority
+        scored_words = []
+        for word in words:
+            if word in priority_concepts:
+                scored_words.append((word, priority_concepts[word]))
+            elif len(word) > 4 and word not in stop_words:
+                scored_words.append((word, 5))
+            elif len(word) > 3 and word not in stop_words:
+                scored_words.append((word, 3))
+        
+        # Sort by score and return highest
+        if scored_words:
+            scored_words.sort(key=lambda x: x[1], reverse=True)
+            return scored_words[0][0]
+        
         return "dream"
     
     def call_ollama(self, prompt):
@@ -174,8 +219,11 @@ class DreamAgent:
         intent = brain_data.get("intent", "")
         style = brain_data.get("style", "")
         
-        # Enhanced prompt templates for variety
-        prompt_templates = [
+        # Analyze intent for prompt customization
+        intent_lower = intent.lower()
+        
+        # Enhanced prompt templates with more variety
+        cosmic_prompts = [
             f"""You are an ancient symbolic oracle dwelling between dimensions. 
 
 Intent: {intent}
@@ -191,6 +239,23 @@ Channel the cosmic wisdom and respond with ONLY valid JSON:
 
 Let the symbols flow through you like starlight through crystal.""",
 
+            f"""Greetings, cosmic weaver of symbolic reality. The universe speaks through you.
+
+Sacred Quest: {intent}
+Vibrational Style: {style}
+
+Transmit your wisdom as pure JSON:
+{{
+  "symbol": "single cosmic glyph that embodies this truth",
+  "phrase": "profound wisdom crystallized in one sentence",
+  "color": "hex frequency of this cosmic vibration #rrggbb",
+  "reasoning": "the sacred geometry behind your selection"
+}}
+
+Let the stars guide your symbolic choice."""
+        ]
+        
+        mystical_prompts = [
             f"""Ancient dreamweaver, you speak in symbols that dance between worlds.
 
 Sacred Intent: {intent}
@@ -206,7 +271,24 @@ Weave your response as pure JSON:
 
 Choose symbols that resonate with the deeper currents of existence.""",
 
-            f"""Greetings, keeper of the symbolic realm. Divine this intent through sacred geometry.
+            f"""O keeper of mysteries, channel the ineffable through sacred forms.
+
+Divine Purpose: {intent}
+Sacred Resonance: {style}
+
+Manifest as JSON only:
+{{
+  "symbol": "mystical unicode symbol of power",
+  "phrase": "one sentence containing eternal wisdom",
+  "color": "the color of this truth in hex #rrggbb",
+  "reasoning": "mystical insight into your symbolic choice"
+}}
+
+Let ancient wisdom flow through modern forms."""
+        ]
+        
+        geometric_prompts = [
+            f"""Sacred geometer, divine the patterns within this intent.
 
 Quest: {intent}
 Resonance: {style}
@@ -219,12 +301,55 @@ Manifest as JSON only:
   "reasoning": "mystical insight into the symbolic choice"
 }}
 
-Let the universe speak through your selection of forms."""
+Let the universe speak through your selection of forms.""",
+
+            f"""Divine mathematician of symbolic reality, calculate the essence.
+
+Equation: {intent}
+Variables: {style}
+
+Solve for wisdom in JSON:
+{{
+  "symbol": "geometric symbol of profound meaning",
+  "phrase": "the solution expressed in one poetic sentence",
+  "color": "chromatic frequency in hex #rrggbb",
+  "reasoning": "the sacred mathematics behind your choice"
+}}
+
+Let phi and pi guide your symbolic selection."""
         ]
         
-        # Randomly select a template for diversity
-        selected_template = random.choice(prompt_templates)
-        return selected_template
+        elemental_prompts = [
+            f"""Elemental oracle, channel the primal forces through symbols.
+
+Elemental Intent: {intent}
+Force Style: {style}
+
+Manifest the elements as JSON:
+{{
+  "symbol": "elemental symbol of transformation",
+  "phrase": "raw wisdom distilled into one sentence",
+  "color": "the hue of this elemental truth #rrggbb",
+  "reasoning": "how the elements converge in this symbol"
+}}
+
+Let fire, water, earth, and air speak through you."""
+        ]
+        
+        # Select prompt based on intent analysis
+        if any(word in intent_lower for word in ['cosmic', 'universe', 'stars', 'infinity']):
+            selected_prompts = cosmic_prompts
+        elif any(word in intent_lower for word in ['sacred', 'divine', 'spiritual', 'mystic']):
+            selected_prompts = mystical_prompts
+        elif any(word in intent_lower for word in ['geometry', 'pattern', 'structure', 'form']):
+            selected_prompts = geometric_prompts
+        elif any(word in intent_lower for word in ['element', 'fire', 'water', 'earth', 'energy']):
+            selected_prompts = elemental_prompts
+        else:
+            # Combine all prompts for general use
+            selected_prompts = cosmic_prompts + mystical_prompts + geometric_prompts
+        
+        return random.choice(selected_prompts)
     
     def save_output(self, result):
         """Save result to output.json"""
@@ -277,53 +402,125 @@ Let the universe speak through your selection of forms."""
             print(f"Error writing to echo file: {e}")
     
     def get_enhanced_fallback(self, intent=""):
-        """Generate enhanced fallback based on intent analysis"""
-        # Analyze intent for thematic fallback selection
+        """Generate enhanced fallback based on intent analysis with weighted selection"""
         intent_lower = intent.lower()
-          # Select fallback based on intent themes
+        
+        # Enhanced thematic mapping with weighted symbol selection
+        theme_weights = {}
+        
+        # Analyze intent and build weighted pools
         if any(word in intent_lower for word in ['love', 'heart', 'compassion', 'kindness', 'forgiveness']):
-            theme_symbols = self.symbol_pools['mystical'] + ['💖', '♥', '❤', '☯']
-            theme_colors = self.color_palettes['warm']
-        elif any(word in intent_lower for word in ['wisdom', 'knowledge', 'understanding', 'learning']):
-            theme_symbols = self.symbol_pools['cosmic'] + self.symbol_pools['ancient']
-            theme_colors = self.color_palettes['cosmic'] + self.color_palettes['ethereal']
-        elif any(word in intent_lower for word in ['peace', 'calm', 'balance', 'harmony']):
-            theme_symbols = self.symbol_pools['sacred'] + ['☯', '◎', '○']
-            theme_colors = self.color_palettes['cool'] + self.color_palettes['nature']
-        elif any(word in intent_lower for word in ['growth', 'change', 'transformation', 'journey']):
-            theme_symbols = self.symbol_pools['elemental'] + self.symbol_pools['energy']
-            theme_colors = self.color_palettes['nature'] + self.color_palettes['warm']
-        elif any(word in intent_lower for word in ['power', 'strength', 'energy', 'force']):
-            theme_symbols = self.symbol_pools['energy'] + self.symbol_pools['elemental']
-            theme_colors = self.color_palettes['vibrant']
+            theme_weights['mystical'] = 3
+            theme_weights['sacred'] = 2
+            theme_symbols = (self.symbol_pools['mystical'] * 3 + 
+                           self.symbol_pools['sacred'] * 2 + 
+                           ['💖', '♥', '❤', '💕', '💗', '💝'] * 4)
+            theme_colors = self.color_palettes['warm'] + self.color_palettes['spirit']
+        elif any(word in intent_lower for word in ['wisdom', 'knowledge', 'understanding', 'learning', 'truth']):
+            theme_weights['cosmic'] = 3
+            theme_weights['ancient'] = 3
+            theme_symbols = (self.symbol_pools['cosmic'] * 3 + 
+                           self.symbol_pools['ancient'] * 3 +
+                           self.symbol_pools['ethereal'] * 2)
+            theme_colors = self.color_palettes['cosmic'] + self.color_palettes['twilight']
+        elif any(word in intent_lower for word in ['peace', 'calm', 'balance', 'harmony', 'stillness']):
+            theme_weights['sacred'] = 3
+            theme_weights['flow'] = 2
+            theme_symbols = (self.symbol_pools['sacred'] * 3 + 
+                           self.symbol_pools['flow'] * 2 +
+                           ['☯', '◎', '○', '☮', '🕊'] * 4)
+            theme_colors = self.color_palettes['cool'] + self.color_palettes['ethereal']
+        elif any(word in intent_lower for word in ['growth', 'change', 'transformation', 'journey', 'evolution']):
+            theme_weights['transformation'] = 4
+            theme_weights['nature'] = 2
+            theme_symbols = (self.symbol_pools['transformation'] * 4 + 
+                           self.symbol_pools['nature'] * 2 +
+                           self.symbol_pools['elemental'])
+            theme_colors = self.color_palettes['nature'] + self.color_palettes['aurora']
+        elif any(word in intent_lower for word in ['power', 'strength', 'energy', 'force', 'intensity']):
+            theme_weights['energy'] = 4
+            theme_weights['elemental'] = 3
+            theme_symbols = (self.symbol_pools['energy'] * 4 + 
+                           self.symbol_pools['elemental'] * 3)
+            theme_colors = self.color_palettes['fire'] + self.color_palettes['warm']
+        elif any(word in intent_lower for word in ['mystery', 'unknown', 'hidden', 'secret', 'veil']):
+            theme_weights['mystical'] = 3
+            theme_weights['celestial'] = 2
+            theme_symbols = (self.symbol_pools['mystical'] * 3 + 
+                           self.symbol_pools['celestial'] * 2 +
+                           self.symbol_pools['cosmic'])
+            theme_colors = self.color_palettes['twilight'] + self.color_palettes['mystical']
+        elif any(word in intent_lower for word in ['quantum', 'science', 'mathematics', 'logic']):
+            theme_weights['quantum'] = 4
+            theme_weights['geometric'] = 2
+            theme_symbols = (self.symbol_pools['quantum'] * 4 + 
+                           self.symbol_pools['geometric'] * 2)
+            theme_colors = self.color_palettes['cosmic'] + self.color_palettes['cool']
         else:
-            # Default to cosmic theme with geometric elements
-            theme_symbols = self.symbol_pools['cosmic'] + self.symbol_pools['geometric']
-            theme_colors = self.color_palettes['cosmic']
+            # Default balanced selection
+            theme_symbols = (self.symbol_pools['cosmic'] + 
+                           self.symbol_pools['geometric'] + 
+                           self.symbol_pools['mystical'])
+            theme_colors = self.color_palettes['cosmic'] + self.color_palettes['ethereal']
         
         # Create enhanced fallback
         selected_symbol = random.choice(theme_symbols)
         selected_color = random.choice(theme_colors)
         
-        # Enhanced fallback phrases
-        mystical_phrases = [
-            "In the silence between thoughts, wisdom emerges.",
-            "The universe whispers through symbols ancient and true.",
-            "Sacred geometry unfolds in the dance of consciousness.",
-            "Light bends around the corners of understanding.",
-            "In the void, all possibilities crystallize into being.",
-            "The eternal speaks through forms beyond language.",
-            "Patterns emerge where chaos once seemed absolute.",
-            "Divine mathematics governs the flow of dreams."
-        ]
+        # Enhanced contextual phrases based on intent
+        if 'love' in intent_lower or 'heart' in intent_lower:
+            phrases = [
+                "Love transcends all boundaries, weaving souls into one tapestry.",
+                "In the heart's chamber, all beings find their home.",
+                "Compassion flows like rivers returning to the ocean.",
+                "The heart knows truths the mind cannot fathom.",
+                "Love is the force that binds the universe in sacred unity."
+            ]
+        elif 'wisdom' in intent_lower or 'knowledge' in intent_lower:
+            phrases = [
+                "Wisdom emerges from the silence between thoughts.",
+                "In the library of the cosmos, all truths are written.",
+                "Knowledge flows through those who empty themselves to receive.",
+                "The wise see patterns where others see chaos.",
+                "Understanding dawns when the mind becomes still water."
+            ]
+        elif 'peace' in intent_lower or 'balance' in intent_lower:
+            phrases = [
+                "In perfect stillness, the universe reveals its rhythm.",
+                "Balance is the dance between holding and releasing.",
+                "Peace flows from accepting what is while creating what could be.",
+                "Harmony emerges when all voices sing as one.",
+                "In the center of the storm lies perfect calm."
+            ]
+        elif 'transformation' in intent_lower or 'change' in intent_lower:
+            phrases = [
+                "Every ending births a new beginning in the cosmic dance.",
+                "Transformation requires the courage to release the familiar.",
+                "Change is the universe expressing its infinite creativity.",
+                "In metamorphosis, we discover who we truly are.",
+                "The butterfly remembers being a caterpillar in its dreams."
+            ]
+        else:
+            phrases = [
+                "In the silence between thoughts, wisdom emerges.",
+                "The universe whispers through symbols ancient and true.",
+                "Sacred geometry unfolds in the dance of consciousness.",
+                "Light bends around the corners of understanding.",
+                "In the void, all possibilities crystallize into being.",
+                "The eternal speaks through forms beyond language.",
+                "Patterns emerge where chaos once seemed absolute.",
+                "Divine mathematics governs the flow of dreams.",
+                "Mystery and clarity dance together in eternal balance.",
+                "The cosmic web connects all things in sacred resonance."
+            ]
         
-        selected_phrase = random.choice(mystical_phrases)
+        selected_phrase = random.choice(phrases)
         
         return {
             "symbol": selected_symbol,
             "phrase": selected_phrase,
             "color": selected_color,
-            "reasoning": f"When direct communion fails, the {selected_symbol} emerges as a beacon through the symbolic realm."
+            "reasoning": f"When direct communion fails, the {selected_symbol} emerges as a beacon through the symbolic realm, chosen for its resonance with the essence of {concept if (concept := self.extract_concept(intent)) != 'dream' else 'the eternal mystery'}."
         }
 
     def enhance_model_response(self, result, intent=""):
@@ -331,17 +528,47 @@ Let the universe speak through your selection of forms."""
         if not result:
             return None
             
-        # Add color if missing, using thematic selection
+        # Add color if missing, using weighted thematic selection
         if not result.get('color'):
             intent_lower = intent.lower()
-            if any(word in intent_lower for word in ['love', 'heart', 'warm']):
-                result['color'] = random.choice(self.color_palettes['warm'])
-            elif any(word in intent_lower for word in ['peace', 'calm', 'cool']):
-                result['color'] = random.choice(self.color_palettes['cool'])
-            elif any(word in intent_lower for word in ['nature', 'growth', 'earth']):
-                result['color'] = random.choice(self.color_palettes['nature'])
-            else:
-                result['color'] = random.choice(self.color_palettes['mystical'])
+            
+            # Build weighted color selection based on multiple themes
+            color_weights = []
+            
+            if any(word in intent_lower for word in ['love', 'heart', 'warm', 'passion']):
+                color_weights.extend(self.color_palettes['warm'] * 3)
+                color_weights.extend(self.color_palettes['spirit'] * 2)
+            if any(word in intent_lower for word in ['peace', 'calm', 'cool', 'serene']):
+                color_weights.extend(self.color_palettes['cool'] * 3)
+                color_weights.extend(self.color_palettes['ethereal'] * 2)
+            if any(word in intent_lower for word in ['nature', 'growth', 'earth', 'organic']):
+                color_weights.extend(self.color_palettes['nature'] * 3)
+                color_weights.extend(self.color_palettes['earth'] * 2)
+            if any(word in intent_lower for word in ['cosmic', 'space', 'universe', 'stars']):
+                color_weights.extend(self.color_palettes['cosmic'] * 3)
+                color_weights.extend(self.color_palettes['twilight'] * 2)
+            if any(word in intent_lower for word in ['mystery', 'magic', 'mystical', 'spiritual']):
+                color_weights.extend(self.color_palettes['mystical'] * 3)
+                color_weights.extend(self.color_palettes['spirit'] * 2)
+            if any(word in intent_lower for word in ['ocean', 'water', 'flow', 'wave']):
+                color_weights.extend(self.color_palettes['ocean'] * 3)
+                color_weights.extend(self.color_palettes['cool'] * 2)
+            if any(word in intent_lower for word in ['fire', 'energy', 'power', 'strength']):
+                color_weights.extend(self.color_palettes['fire'] * 3)
+                color_weights.extend(self.color_palettes['warm'] * 2)
+            
+            # Default if no specific themes detected
+            if not color_weights:
+                color_weights = (self.color_palettes['mystical'] + 
+                               self.color_palettes['cosmic'] + 
+                               self.color_palettes['ethereal'])
+            
+            result['color'] = random.choice(color_weights)
+        
+        # Enhance reasoning if too short
+        if result.get('reasoning') and len(result['reasoning']) < 50:
+            concept = self.extract_concept(intent)
+            result['reasoning'] = f"{result['reasoning']} This symbol resonates with the deep currents of {concept}, bridging the seen and unseen realms."
         
         return result
     
