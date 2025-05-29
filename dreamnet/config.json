@@ -1,0 +1,87 @@
+{
+  "model": {
+    "name": "qwen3:1.7b",
+    "timeout": 60,
+    "parameters": {
+      "temperature": 0.8,
+      "top_p": 0.9
+    }
+  },
+  "symbols": {
+    "base_pools": {
+      "sacred": "☯🕉✡☪⚛♱☥🔯☸✝☦☩",
+      "cosmic": "∞✦✧⭐🌟💫🌙☽☾◯⭕☉✯✰✱", 
+      "geometric": "◊▲∆◈⟁⬟⬢⬡⧫◇⬠⬣⬦⬧",
+      "elemental": "🔥💧🌍💨⚡❄🌊🍃🌋🌪☄🌈",
+      "mystical": "🔮🌺🦋🕊🐉🌸🍄🌿🔯✨🦚🦢🌹",
+      "nature": "🌲🌳🌴🌵🌷🌻🌼🏵🥀🌾🌱🍀",
+      "quantum": "⟨⟩∴∵∀∃⊗⊕⊙⊚⊛⊜",
+      "flow": "∞∿〰≈⤙⤜⤛⟁⟐≋〜∼≀≁"
+    },
+    "fallback": "∞◎✧≋⬢🌙☯🔮"
+  },
+  "colors": {
+    "base_palettes": {
+      "cosmic": ["#1a1a2e", "#533483", "#7209b7", "#81689d"],
+      "mystical": ["#8e7cc3", "#9b59b6", "#663399", "#ba68c8"],
+      "nature": ["#27ae60", "#2ecc71", "#1abc9c", "#74c69d"],
+      "warm": ["#e74c3c", "#d35400", "#f39c12", "#ff6b6b"],
+      "cool": ["#3498db", "#2980b9", "#1abc9c", "#45b7d1"],
+      "ethereal": ["#ecf0f1", "#95a5a6", "#34495e", "#c7ceea"]
+    },
+    "fallback": "#7f8c8d"
+  },
+  "themes": {
+    "love": {
+      "symbols": ["sacred", "mystical"],
+      "colors": ["warm", "mystical"],
+      "keywords": ["love", "heart", "compassion", "kindness", "forgiveness"]
+    },
+    "wisdom": {
+      "symbols": ["cosmic", "sacred"],
+      "colors": ["cosmic", "ethereal"],
+      "keywords": ["wisdom", "knowledge", "understanding", "truth", "learning"]
+    },
+    "peace": {
+      "symbols": ["sacred", "flow"],
+      "colors": ["cool", "ethereal"],
+      "keywords": ["peace", "calm", "balance", "harmony", "stillness"]
+    },
+    "transformation": {
+      "symbols": ["elemental", "mystical"],
+      "colors": ["nature", "warm"],
+      "keywords": ["transformation", "change", "growth", "journey", "evolution"]
+    },
+    "quantum": {
+      "symbols": ["quantum", "geometric"],
+      "colors": ["cosmic", "cool"],
+      "keywords": ["quantum", "science", "mathematics", "logic", "consciousness"]
+    }
+  },
+  "prompts": {
+    "base_template": "You are a cosmic oracle. Transform this intent into mystical wisdom.\n\nIntent: {intent}\nStyle: {style}\n\nRespond with ONLY valid JSON:\n{{\n  \"symbol\": \"single mystical unicode symbol\",\n  \"phrase\": \"one profound sentence of wisdom\",\n  \"color\": \"hex color #rrggbb\",\n  \"reasoning\": \"brief explanation of symbolic choice\"\n}}\n\nLet cosmic wisdom flow through you.",
+    "variations": [
+      "Ancient dreamweaver, speak in symbols that dance between worlds.",
+      "Sacred geometer, divine the patterns within this intent.", 
+      "Elemental oracle, channel the primal forces through symbols.",
+      "Quantum consciousness, collapse possibilities into meaning."
+    ]
+  },
+  "fallbacks": [
+    {
+      "symbol": "∞",
+      "phrase": "The dream continues beyond understanding.",
+      "reasoning": "When symbols fail, the infinite persists."
+    },
+    {
+      "symbol": "◎", 
+      "phrase": "In silence, all answers emerge.",
+      "reasoning": "The centered circle represents completeness."
+    },
+    {
+      "symbol": "✧",
+      "phrase": "Stars whisper secrets to those who listen.",
+      "reasoning": "Light pierces through when words cannot reach."
+    }
+  ]
+}
