@@ -1,0 +1,10 @@
+# Cache files
+.cache/
+*.cache
+
+# Temporary files
+*.tmp
+*.temp
+
+# Test configurations
+brain_test_*
